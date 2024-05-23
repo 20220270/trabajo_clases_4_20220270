@@ -6,6 +6,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import PokemonList from '../screens/PokemonList';
 import HomeScreen from '../screens/HomeScreen';
 import PokemonAxios from '../screens/PokemonAxios';
+import NuevaPantalla from '../screens/NuevaPantalla';
 
 // Navegador Bottom Tabs Navigator
 const Tab = createBottomTabNavigator();
@@ -53,6 +54,24 @@ export default function BottomTab() {
         tabBarActiveTintColor: '#3b4cca',
         headerStyle: {
           backgroundColor: '#3b4cca',
+        },
+        headerTintColor: '#fff',
+        tabBarIcon: ({ color }) => (
+          <Ionicons name="list" color={color} size={24} />
+        ),
+      }}
+    />
+
+  <Tab.Screen
+      name="NuevaPantalla"
+      component={NuevaPantalla}
+      options={{
+        title: 'Pantalla del ejercicio',
+        tabBarActiveTintColor: 'green',
+        headerStyle: {
+          backgroundColor: '#cc0000',
+          borderBottomRightRadius: 35,
+          borderBottomLeftRadius: 35,
         },
         headerTintColor: '#fff',
         tabBarIcon: ({ color }) => (

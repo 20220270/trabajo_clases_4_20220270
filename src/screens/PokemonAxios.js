@@ -37,6 +37,7 @@ export default function PokemonAxios() {
           source={{ uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${item.url.split('/')[6]}.png` }}
         />
         <Text style={styles.title}>{item.name}</Text>
+        <Text style={styles.title}>{item.description}</Text>
       </View>
     );
   };

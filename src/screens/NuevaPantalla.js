@@ -1,35 +1,46 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, Image, StyleSheet, Dimensions, TextInput, ActivityIndicator } from 'react-native';
-
-
+import axios from 'axios';
+import FormularioPokemon from '../components/FormularioPokemon';
 
 const WIDTH = Dimensions.get('window').width;
 const numColumns = 3;
 
-import PokemonItem from '../components/PokemonItem';
-import FormularioPokemon from '../components/FormularioPokemon';
-
-export default function PokemonList() {
+export default function NuevaPantalla() {
   const [pokemon, setPokemon] = useState([]);
+  const [nPokemon, setNPokemon]=useState(0); //La api comenzará mostrando solamente 25 pokemones
   const [loading, setLoading] = useState(false);
-  const [cantidadPokemon, setCantidadPokemon] = useState(10);
-
-  const fetchData = async () => {
-    try {
-      setLoading(true);
-      const response = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=${cantidadPokemon}`);
-      const data = await response.json();
-      setPokemon(data.results.map((result, index) => ({ ...result, id: index + 1 })));
-    } catch (error) {
-      console.log("Hubo un error listando los pokemones", error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
-    fetchData();
-  }, [cantidadPokemon]);
+    getPokemon(nPokemon);
+  }, [nPokemon]);
+
+  const getPokemon = async (nPokemon) => {
+    try {
+      setLoading(true);
+      const response = await axios.get(`https://pokeapi.co/api/v2/pokemon?limit=${nPokemon}`);
+      const dataPokemon = response.data;
+      setPokemon(dataPokemon.results);
+      setLoading(false);
+    } catch (error) {
+      console.log("Hubo un error listando los pokemones", error);
+      setLoading(false);
+    }
+  }
+
+  const renderItem = ({ item }) => {
+    return (
+      <View style={styles.card}>
+        <Text>Número Pokedex: <Text style={styles.number}>{item.url.split('/')[6]}</Text></Text>
+        <Image
+          style={styles.image}
+          source={{ uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${item.url.split('/')[6]}.png` }}
+        />
+        <Text style={styles.title}>{item.name}</Text>
+        
+      </View>
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -37,21 +48,19 @@ export default function PokemonList() {
         tituloFormulario='Listado de Pokemones usando Fetch'
         labelInput='Ingrese la cantidad de pokemon a cargar: '
         placeHolderInput='20'
-        valor={cantidadPokemon}
-        setValor={setCantidadPokemon}
+        valor={nPokemon}
+        setValor={setNPokemon}
       />
       {loading ? (
         <ActivityIndicator style={styles.loading} size="large" color="#0000ff" />
       ) : (
         <FlatList
           data={pokemon}
-          renderItem={({ item }) => <PokemonItem item={item} />}
+          renderItem={renderItem}
           keyExtractor={(item) => item.name}
           numColumns={numColumns}
           contentContainerStyle={styles.list}
-          
         />
-        
       )}
     </View>
   );
@@ -69,7 +78,6 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 10,
-    textAlign: 'center'
   },
   list: {
     justifyContent: 'center',
@@ -94,9 +102,17 @@ const styles = StyleSheet.create({
     marginTop: 5,
     textTransform: 'capitalize',
   },
+  description: {
+    fontSize: 12,
+    textAlign: 'center',
+    marginTop: 5,
+  },
   image: {
     width: 80,
     height: 80,
+  },
+  number:{
+    fontWeight:'bold'
   },
   loading: {
     marginTop: 20,
