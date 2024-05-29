@@ -69,7 +69,7 @@ export default function BottomTab() {
         title: 'Pantalla del ejercicio',
         tabBarActiveTintColor: 'green',
         headerStyle: {
-          backgroundColor: '#cc0000',
+          backgroundColor: '#cc1900',
           borderBottomRightRadius: 35,
           borderBottomLeftRadius: 35,
         },
